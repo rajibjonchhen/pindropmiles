@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Pindrop Miles admin</title>
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FFFDF8;--navy:#17337E;--amber:#F5A94A;--teal:#4BB3BF;--ink:#1d2a4d;--mute:#5d6786;--line:#d9e0e8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 Figtree,system-ui,sans-serif}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.box{max-width:760px;margin:0 auto;padding:18px}
+.gate{max-width:380px;margin:12vh auto 0;padding:24px 20px;text-align:center}
+.gate img{width:72px;margin-bottom:6px}
+h1{font:700 26px Lexend,sans-serif;color:var(--navy);margin:0 0 8px}
+h2{font:700 18px Lexend,sans-serif;color:var(--navy);margin:0 0 6px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+.row{display:flex;gap:8px;margin:6px 0;flex-wrap:wrap}
+.row>*{flex:1 1 150px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font:inherit}
+button{font:600 14px Figtree,sans-serif;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+button.pri{background:var(--navy);border-color:var(--navy);color:#fff}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.del{flex:0 0 auto;color:#b3261e}
+button.lnk{border:0;background:none;color:var(--navy);text-decoration:underline;padding:6px}
+.bar{position:sticky;bottom:0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--paper);padding:12px 0;border-top:1px solid var(--line)}
+.note{color:var(--mute);font-size:14px}
+.err{color:#b3261e;font-size:14px;min-height:1.4em;margin:6px 0}
+.ok{color:#1b7f4b;font-weight:600;font-size:14px}
+.info{background:#e6f4f6;border:1px solid var(--teal);border-radius:10px;padding:10px;font-size:14px;text-align:left}
+</style>
+</head>
+<body>
+<div id="gate" class="gate"></div>
+<div id="app" class="box" hidden></div>
+<script src="firebase-config.js"></script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const DEFAULT = {
+  brand: { name: "Pindrop Miles", tagline: "Every mile, a new discovery", logo: "logo-full.png" },
+  socials: [
+    { platform: "facebook",  url: "https://facebook.com/" },
+    { platform: "youtube",   url: "https://youtube.com/" },
+    { platform: "instagram", url: "https://instagram.com/" },
+    { platform: "tiktok",    url: "https://tiktok.com/" },
+    { platform: "x",         url: "https://x.com/" },
+    { platform: "threads",   url: "https://threads.net/" },
+    { platform: "linkedin",  url: "https://linkedin.com/" },
+    { platform: "pinterest", url: "https://pinterest.com/" }
+  ],
+  sections: [
+    { title: "Popular videos", type: "videos", items: [
+      { label: "Popular video 1", url: "https://youtube.com/", note: "Paste a YouTube link for an automatic thumbnail" },
+      { label: "Popular video 2", url: "https://youtube.com/", note: "" },
+      { label: "Popular video 3", url: "https://tiktok.com/", note: "" },
+      { label: "Popular video 4", url: "https://instagram.com/", note: "" },
+      { label: "Popular video 5", url: "https://youtube.com/", note: "" } ] },
+    { title: "Latest", type: "links", items: [
+      { label: "Newest video title goes here", url: "https://youtube.com/", note: "Added this week" } ] },
+    { title: "Trending", type: "links", items: [
+      { label: "Trending post title goes here", url: "https://instagram.com/", note: "" } ] },
+    { title: "Most liked", type: "links", items: [
+      { label: "Most liked video title goes here", url: "https://tiktok.com/", note: "" } ] },
+    { title: "Travel guides", type: "links", items: [
+      { label: "Lisbon in 3 days: our route", url: "https://example.com/lisbon-guide", note: "Blog or PDF guide" },
+      { label: "Where to eat in Lisbon", url: "https://example.com/lisbon-food", note: "" },
+      { label: "Our saved places map", url: "https://maps.google.com/", note: "Google Maps list" } ] },
+    { title: "Playlists and series", type: "links", items: [
+      { label: "Lisbon food series", url: "https://youtube.com/", note: "YouTube playlist" },
+      { label: "Hidden corners of Portugal", url: "https://youtube.com/", note: "" } ] },
+    { title: "About us", type: "text", text: "We are Pindrop Miles. We explore Lisbon and beyond, one mile at a time, and share the food, hidden corners and honest tips we find along the way.", items: [] },
+    { title: "Work with us", type: "links", items: [
+      { label: "Brand and tourism collaborations", url: "mailto:hello@example.com", note: "hello@example.com" } ] },
+    { title: "Join and support", type: "links", items: [
+      { label: "Get new guides by email", url: "https://example.com/newsletter", note: "Newsletter" },
+      { label: "Support our trips", url: "https://example.com/support", note: "Buy us a coffee" } ] }
+  ]
+};
+
+const PLATFORM_NAMES = {facebook:"Facebook",youtube:"YouTube",instagram:"Instagram",tiktok:"TikTok",x:"X",threads:"Threads",linkedin:"LinkedIn",pinterest:"Pinterest"};
+const IDLE_MS = 30*60*1000;
+const $ = id => document.getElementById(id);
+const el = (t,p={},kids=[]) => { const e=document.createElement(t);
+  for(const k in p){ if(k==="text") e.textContent=p[k]; else if(k.startsWith("on")) e[k]=p[k]; else e.setAttribute(k,p[k]); }
+  [].concat(kids).forEach(x=>e.append(x)); return e; };
+
+const cfg = window.PM_FIREBASE;
+if(!cfg || !cfg.apiKey || !cfg.projectId){
+  $("gate").replaceChildren(el("h1",{text:"Almost there"}),el("div",{class:"info",text:"Open firebase-config.js and paste in your Firebase project details, then upload it next to this page and reload."}));
+} else main();
+
+function main(){
+  const app = initializeApp(cfg), auth = getAuth(app), db = getFirestore(app);
+  const ref = doc(db,"site","page");
+  let data = null, dirty = false, idle, user = null;
+
+  const gate = $("gate"), box = $("app");
+  const gateBase = (title,text)=>gate.replaceChildren(el("img",{src:"logo.png",alt:"",onerror:function(){this.remove();}}),el("h1",{text:title}),el("p",{class:"note",text:text}));
+
+  function showLogin(){
+    box.hidden = true; box.replaceChildren(); gate.hidden = false;
+    gateBase("Admin sign in","Sign in with your admin email and password.");
+    const em = el("input",{type:"email",autocomplete:"username","aria-label":"Email",placeholder:"Email"});
+    const pw = el("input",{type:"password",autocomplete:"current-password","aria-label":"Password",placeholder:"Password"});
+    const msg = el("p",{class:"err",role:"alert"});
+    const btn = el("button",{class:"pri",type:"submit",text:"Sign in"});
+    const forgot = el("button",{class:"lnk",type:"button",text:"Forgot password?",onclick:async()=>{
+      if(!em.value){ msg.textContent="Type your email first."; return; }
+      try{ await sendPasswordResetEmail(auth,em.value); msg.className="ok"; msg.textContent="If that email has an account, a reset link is on its way."; }catch(e){ msg.className="err"; msg.textContent="Could not send the email."; } }});
+    gate.append(el("form",{onsubmit:async e=>{
+      e.preventDefault(); btn.disabled=true; msg.className="err"; msg.textContent="";
+      try{ await signInWithEmailAndPassword(auth,em.value.trim(),pw.value); }
+      catch(x){ msg.textContent = x.code==="auth/too-many-requests" ? "Too many attempts. Wait a few minutes and try again." : "Wrong email or password."; btn.disabled=false; }
+    }},[el("div",{class:"row"},[em]),el("div",{class:"row"},[pw]),msg,btn,el("div",{},[forgot])]));
+    em.focus();
+  }
+
+  async function load(){
+    data = JSON.parse(JSON.stringify(DEFAULT));
+    try{
+      const s = await getDoc(ref);
+      if(s.exists() && s.data().json) data = JSON.parse(s.data().json);
+      else { const r = await fetch("data.json",{cache:"no-store"}); if(r.ok) data = await r.json(); }
+    }catch(e){}
+  }
+  function bump(){ clearTimeout(idle); idle = setTimeout(()=>signOut(auth),IDLE_MS); }
+  ["click","keydown","input"].forEach(ev=>addEventListener(ev,()=>{ if(user) bump(); }));
+  addEventListener("beforeunload",e=>{ if(dirty){ e.preventDefault(); e.returnValue=""; } });
+
+  onAuthStateChanged(auth, async u=>{
+    user = u;
+    if(!u){ data=null; dirty=false; showLogin(); return; }
+    await load(); gate.hidden = true; box.hidden = false; dirty = false; render(); bump();
+  });
+
+  function render(){
+    const a = box; a.replaceChildren();
+    const R = ()=>{ dirty=true; render(); };
+    const inp = (obj,key,ph) => el("input",{value:obj[key]||"",placeholder:ph,"aria-label":ph,oninput:e=>{obj[key]=e.target.value;dirty=true;}});
+    const rm = (arr,i) => el("button",{class:"del",type:"button",text:"Remove",onclick:()=>{arr.splice(i,1);R();}});
+    const sel = (opts,cur,fn,label) => el("select",{"aria-label":label,onchange:e=>fn(e.target.value)},
+      opts.map(([v,t])=>{const o=el("option",{value:v,text:t}); if(v===cur)o.selected=true; return o;}));
+
+    a.append(el("h1",{text:"Edit your page"}),
+      el("p",{class:"note",text:"Signed in as "+(user&&user.email)+". Make your changes, then press Save and publish. They go live straight away."}));
+    a.append(el("div",{class:"card"},[el("h2",{text:"Brand"}),
+      el("div",{class:"row"},[inp(data.brand,"name","Brand name"),inp(data.brand,"tagline","Tagline")]),
+      el("div",{class:"row"},[inp(data.brand,"logo","Header logo file (e.g. logo-full.png)")])]));
+    const sc = el("div",{class:"card"},[el("h2",{text:"Social profiles"})]);
+    data.socials.forEach((s,i)=>sc.append(el("div",{class:"row"},[
+      sel(Object.keys(PLATFORM_NAMES).map(k=>[k,PLATFORM_NAMES[k]]),s.platform,v=>{s.platform=v;dirty=true;},"Platform"),
+      inp(s,"url","Profile link"),rm(data.socials,i)])));
+    sc.append(el("button",{type:"button",text:"Add profile",onclick:()=>{data.socials.push({platform:"facebook",url:""});R();}}));
+    a.append(sc);
+    data.sections.forEach((s,si)=>{
+      const c = el("div",{class:"card"},[el("div",{class:"row"},[inp(s,"title","Section title"),
+        sel([["links","Link list"],["videos","Video cards"],["text","Text block"]],s.type||"links",v=>{s.type=v;R();},"Layout"),rm(data.sections,si)])]);
+      (s.type==="text"?[]:s.items).forEach((it,ii)=>c.append(el("div",{class:"row"},[inp(it,"label","Title"),inp(it,"url","Link (YouTube, TikTok, any URL)"),inp(it,"note","Short note (optional)"),rm(s.items,ii)])));
+      if(s.type==="text"){ const ta=el("textarea",{rows:"4","aria-label":"Text",placeholder:"Write a short paragraph",oninput:e=>{s.text=e.target.value;dirty=true;}}); ta.value=s.text||""; c.append(ta); }
+      else c.append(el("button",{type:"button",text:"Add link",onclick:()=>{s.items.push({label:"",url:"",note:""});R();}}));
+      a.append(c);
+    });
+    a.append(el("button",{type:"button",text:"Add section",onclick:()=>{data.sections.push({title:"New section",type:"links",items:[{label:"",url:"",note:""}]});R();}}));
+
+    a.append(el("div",{class:"card"},[el("h2",{text:"Password"}),
+      el("button",{type:"button",text:"Email me a password reset link",onclick:async e=>{
+        try{ await sendPasswordResetEmail(auth,user.email); e.target.textContent="Reset link sent"; }catch(x){ e.target.textContent="Could not send"; } }})]));
+
+    const status = el("span",{class:"note",role:"status"});
+    const save = el("button",{class:"pri",type:"button",text:"Save and publish",onclick:async()=>{
+      save.disabled=true; status.className="note"; status.textContent="Publishing…";
+      try{ await setDoc(ref,{json:JSON.stringify(data),updated:serverTimestamp()}); dirty=false; status.className="ok"; status.textContent="Published. Your page is updated."; }
+      catch(x){ status.className="err"; status.textContent = x.code==="permission-denied" ? "This account is not allowed to publish. Check the rules and your user ID." : "Could not publish. Check your connection and try again."; }
+      save.disabled=false; }});
+    a.append(el("div",{class:"bar"},[save,
+      el("button",{type:"button",text:"Preview",onclick:()=>{ try{localStorage.setItem("pm_preview",JSON.stringify(data));}catch(e){} open("./#preview","_blank"); }}),
+      el("button",{type:"button",text:"Download backup",onclick:()=>{
+        const l=el("a",{href:URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"})),download:"data.json"}); document.body.append(l); l.click(); l.remove(); }}),
+      el("button",{type:"button",text:"Sign out",onclick:()=>signOut(auth)}),status]));
+  }
+}
+</script>
+</body>
+</html>
