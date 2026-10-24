@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pindrop Miles — Every mile, a new discovery</title>
+<meta name="description" content="Every mile, a new discovery. Find Pindrop Miles on every platform.">
+<meta property="og:title" content="Pindrop Miles">
+<meta property="og:description" content="Every mile, a new discovery">
+<meta property="og:image" content="logo-full.png">
+<meta name="theme-color" content="#FFFDF8">
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FFFDF8;--navy:#17337E;--amber:#F5A94A;--teal:#4BB3BF;--tealtint:#E6F4F6;--ambertint:#FEF1DE;--ink:#1d2a4d;--mute:#5d6786;--line:#e3e8ee}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{color:var(--ink);font:16px/1.5 Figtree,system-ui,sans-serif;padding-bottom:env(safe-area-inset-bottom);
+  background:var(--paper) linear-gradient(rgba(75,179,191,.12) 1px,transparent 1px) 0 0/36px 36px,linear-gradient(90deg,rgba(75,179,191,.12) 1px,transparent 1px) 0 0/36px 36px}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.wrap{max-width:620px;margin:0 auto;padding:0 18px}
+.hero{text-align:center;padding:calc(26px + env(safe-area-inset-top)) 0 10px}
+.hero img{width:min(230px,62%);height:auto;display:block;margin:0 auto}
+.fallback{font:700 32px Lexend,sans-serif;color:var(--navy)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+h1{margin:0}
+.socials{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 8px;margin:18px 0 6px}
+.soc{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;font-size:12.5px;font-weight:600;color:var(--navy)}
+.badge{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 17px Lexend,sans-serif;box-shadow:0 0 0 4px var(--paper),0 0 0 6px var(--c,var(--teal));transition:transform .15s}
+.soc:hover .badge{transform:translateY(-4px)}
+section{margin-top:34px}
+h2{display:flex;align-items:center;gap:12px;font:700 20px Lexend,sans-serif;color:var(--navy);margin:0 0 14px}
+h2::after{content:"";flex:1;height:2px;background:var(--c);border-radius:2px;opacity:.7}
+.list{display:grid;gap:10px}
+.link{display:flex;align-items:center;gap:12px;padding:12px 14px 12px 12px;background:#fff;border:1px solid var(--line);border-left:6px solid var(--c);border-radius:6px 16px 16px 6px;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.link:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(23,51,126,.12)}
+.link .badge{width:34px;height:34px;font-size:12px;box-shadow:none;flex:none}
+.link b{display:block;font-weight:600;line-height:1.25}
+.link small{color:var(--mute)}
+.go{margin-left:auto;flex:none;width:30px;height:30px;border-radius:50%;background:var(--c);color:var(--navy);display:grid;place-items:center;font-weight:700}
+/* videos: one featured, the rest in a grid */
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px}
+.vid{text-decoration:none;display:block}
+.vid:first-child{grid-column:1/-1}
+.thumb{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,var(--navy),var(--teal));display:grid;place-items:center;border:3px solid #fff;box-shadow:0 4px 14px rgba(23,51,126,.18)}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.play{position:relative;width:48px;height:48px;border-radius:50%;background:var(--amber);color:var(--navy);display:grid;place-items:center;font-size:16px;padding-left:3px;transition:transform .15s}
+.vid:first-child .play{width:60px;height:60px;font-size:20px}
+.vid:hover .play{transform:scale(1.12)}
+.thumb .badge{position:absolute;left:8px;top:8px;width:26px;height:26px;font-size:11px;box-shadow:none}
+.vid b{display:block;margin-top:8px;font-weight:600;line-height:1.25}
+.vid small{color:var(--mute)}
+.about{margin:0;white-space:pre-line;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;line-height:1.6}
+footer{text-align:center;color:var(--mute);font-size:13px;padding:40px 18px 30px}
+footer img{display:block;width:70px;margin:0 auto 8px}
+footer p{margin:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="public">
+  <main class="wrap">
+    <div class="hero"><div id="logoBox"></div><h1 class="sr" id="bName"></h1><p class="sr" id="bTag"></p></div>
+    <nav class="socials" id="socials" aria-label="Social media profiles"></nav>
+    <div id="sections"></div>
+  </main>
+  <footer><img src="logo.png" alt="" onerror="this.remove()"><p id="foot"></p></footer>
+</div>
+
+<script>
+/* ============ DEFAULT CONTENT (replaced by data.json once you upload one) ============ */
+const DEFAULT = {
+  brand: { name: "Pindrop Miles", tagline: "Every mile, a new discovery", logo: "logo-full.png" },
+  socials: [
+    { platform: "facebook",  url: "https://facebook.com/" },
+    { platform: "youtube",   url: "https://youtube.com/" },
+    { platform: "instagram", url: "https://instagram.com/" },
+    { platform: "tiktok",    url: "https://tiktok.com/" },
+    { platform: "x",         url: "https://x.com/" },
+    { platform: "threads",   url: "https://threads.net/" },
+    { platform: "linkedin",  url: "https://linkedin.com/" },
+    { platform: "pinterest", url: "https://pinterest.com/" }
+  ],
+  sections: [
+    { title: "Popular videos", type: "videos", items: [
+      { label: "Popular video 1", url: "https://youtube.com/", note: "Paste a YouTube link for an automatic thumbnail" },
+      { label: "Popular video 2", url: "https://youtube.com/", note: "" },
+      { label: "Popular video 3", url: "https://tiktok.com/", note: "" },
+      { label: "Popular video 4", url: "https://instagram.com/", note: "" },
+      { label: "Popular video 5", url: "https://youtube.com/", note: "" } ] },
+    { title: "Latest", type: "links", items: [
+      { label: "Newest video title goes here", url: "https://youtube.com/", note: "Added this week" } ] },
+    { title: "Trending", type: "links", items: [
+      { label: "Trending post title goes here", url: "https://instagram.com/", note: "" } ] },
+    { title: "Most liked", type: "links", items: [
+      { label: "Most liked video title goes here", url: "https://tiktok.com/", note: "" } ] },
+    { title: "Travel guides", type: "links", items: [
+      { label: "Lisbon in 3 days: our route", url: "https://example.com/lisbon-guide", note: "Blog or PDF guide" },
+      { label: "Where to eat in Lisbon", url: "https://example.com/lisbon-food", note: "" },
+      { label: "Our saved places map", url: "https://maps.google.com/", note: "Google Maps list" } ] },
+    { title: "Playlists and series", type: "links", items: [
+      { label: "Lisbon food series", url: "https://youtube.com/", note: "YouTube playlist" },
+      { label: "Hidden corners of Portugal", url: "https://youtube.com/", note: "" } ] },
+    { title: "About us", type: "text", text: "We are Pindrop Miles. We explore Lisbon and beyond, one mile at a time, and share the food, hidden corners and honest tips we find along the way.", items: [] },
+    { title: "Work with us", type: "links", items: [
+      { label: "Brand and tourism collaborations", url: "mailto:hello@example.com", note: "hello@example.com" } ] },
+    { title: "Join and support", type: "links", items: [
+      { label: "Get new guides by email", url: "https://example.com/newsletter", note: "Newsletter" },
+      { label: "Support our trips", url: "https://example.com/support", note: "Buy us a coffee" } ] }
+  ]
+};
+const PLATFORMS = {
+  facebook:{n:"Facebook",c:"#1877f2",h:["facebook.com","fb.watch","fb.com"]},
+  youtube:{n:"YouTube",c:"#ff0000",h:["youtube.com","youtu.be"]},
+  instagram:{n:"Instagram",c:"linear-gradient(45deg,#f9a825,#e1306c,#833ab4)",h:["instagram.com"]},
+  tiktok:{n:"TikTok",c:"#111",h:["tiktok.com"]},
+  x:{n:"X",c:"#000",h:["x.com","twitter.com"]},
+  threads:{n:"Threads",c:"#333",h:["threads.net","threads.com"]},
+  linkedin:{n:"LinkedIn",c:"#0a66c2",h:["linkedin.com"]},
+  pinterest:{n:"Pinterest",c:"#e60023",h:["pinterest.com","pin.it"]},
+  mail:{n:"Email",c:"#17337E",h:[]},
+  web:{n:"Link",c:"#17337E",h:[]}
+};
+const ACCENTS = ["#F5A94A","#4BB3BF","#17337E"];
+const detect = u => { if(/^mailto:/i.test(u||"")) return "mail"; try{ const h=new URL(u).hostname.replace(/^www\./,'');
+  for(const k in PLATFORMS) if(PLATFORMS[k].h.some(x=>h===x||h.endsWith('.'+x))) return k; }catch(e){} return "web"; };
+const safe = u => /^(https?:|mailto:|tel:)/i.test(u||"") ? u : "#";
+const ytId = u => { const m=(u||"").match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/))([\w-]{11})/); return m?m[1]:null; };
+const el = (t,p={},kids=[]) => { const e=document.createElement(t);
+  for(const k in p){ if(k==="text") e.textContent=p[k]; else if(k.startsWith("on")) e[k]=p[k]; else e.setAttribute(k,p[k]); }
+  [].concat(kids).forEach(x=>e.append(x)); return e; };
+const ICONS = {"facebook": "<path d=\"M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z\"/>", "youtube": "<path d=\"M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z\"/>", "instagram": "<g fill=\"none\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"5.5\"/><circle cx=\"12\" cy=\"12\" r=\"4.2\"/></g><circle cx=\"17.4\" cy=\"6.6\" r=\"1.4\" fill=\"#fff\"/>", "tiktok": "<path d=\"M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z\"/>", "x": "<path d=\"M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z\"/>", "threads": "<path d=\"M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z\"/>", "linkedin": "<path d=\"M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z\"/>", "pinterest": "<path d=\"M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z\"/>", "mail": "<g fill=\"none\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2.5\"/><path d=\"M3.5 7.5 12 13.5l8.5-6\"/></g>", "web": "<g fill=\"none\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1\"/></g>"};
+const badge = (k,c) => { const s = el("span",{class:"badge",style:"background:"+PLATFORMS[k].c+(c?";--c:"+c:""),"aria-hidden":"true"}); s.innerHTML='<svg viewBox="0 0 24 24" width="56%" height="56%" fill="#fff">'+ICONS[k]+'</svg>'; return s; };
+let data = JSON.parse(JSON.stringify(DEFAULT));
+
+function videoCard(i){
+  const id = ytId(i.url), thumb = el("div",{class:"thumb"});
+  if(id){ const img = el("img",{src:"https://i.ytimg.com/vi/"+id+"/hqdefault.jpg",alt:"",loading:"lazy"}); img.onerror=()=>img.remove(); thumb.append(img); }
+  thumb.append(badge(detect(i.url)), el("span",{class:"play","aria-hidden":"true",text:"▶"}));
+  return el("a",{class:"vid",href:safe(i.url),target:"_blank",rel:"noopener noreferrer"},[thumb,el("b",{text:i.label}),i.note?el("small",{text:i.note}):""]);
+}
+
+function renderPublic(){
+  const b = data.brand;
+  document.title = b.name + " — " + b.tagline;
+  bName.textContent = b.name; bTag.textContent = b.tagline;
+  const fb = () => logoBox.replaceChildren(el("div",{class:"fallback","aria-hidden":"true",text:b.name}));
+  if(b.logo){ const img = el("img",{src:b.logo,alt:""}); img.onerror=fb; logoBox.replaceChildren(img); } else fb();
+
+  socials.replaceChildren();
+  data.socials.filter(s=>s.url).forEach((s,n)=>{
+    const k = s.platform in PLATFORMS ? s.platform : "web";
+    socials.append(el("a",{class:"soc",href:safe(s.url),target:"_blank",rel:"noopener noreferrer","aria-label":PLATFORMS[k].n},[badge(k,ACCENTS[n%3]),PLATFORMS[k].n]));
+  });
+
+  sections.replaceChildren();
+  let n = 0;
+  data.sections.forEach(s=>{
+    if(s.type==="text"){ if(!s.text) return; sections.append(el("section",{style:"--c:"+ACCENTS[n++%3]},[el("h2",{text:s.title}),el("p",{class:"about",text:s.text})])); return; }
+    const items = s.items.filter(i=>i.url&&i.label);
+    if(!items.length) return;
+    const c = ACCENTS[n++%3];
+    const body = s.type==="videos" ? el("div",{class:"vgrid"},items.map(videoCard))
+      : el("div",{class:"list"},items.map(i=>el("a",{class:"link",href:safe(i.url),target:"_blank",rel:"noopener noreferrer"},[
+          badge(detect(i.url)), el("span",{},[el("b",{text:i.label}), i.note?el("small",{text:i.note}):""]), el("span",{class:"go","aria-hidden":"true",text:"↗"})])));
+    sections.append(el("section",{style:"--c:"+c},[el("h2",{text:s.title}),body]));
+  });
+  foot.textContent = "© " + new Date().getFullYear() + " " + b.name;
+}
+
+(async()=>{
+  try{ const r = await fetch("data.json",{cache:"no-store"}); if(r.ok) data = await r.json(); }catch(e){}
+  if(location.hash==="#preview"){ try{ const p=localStorage.getItem("pm_preview"); if(p) data=JSON.parse(p); }catch(e){} }
+  renderPublic();
+})();
+</script>
+</body>
+</html>
