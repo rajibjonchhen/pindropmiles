@@ -1,87 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pindrop Miles — Every mile, a new discovery</title>
-<meta name="description" content="Every mile, a new discovery. Find Pindrop Miles on every platform.">
-<meta property="og:title" content="Pindrop Miles">
-<meta property="og:description" content="Every mile, a new discovery">
-<meta property="og:image" content="logo-full.png">
-<meta name="theme-color" content="#FFFDF8">
-<link rel="icon" href="logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{--paper:#FFFDF8;--navy:#17337E;--amber:#F5A94A;--teal:#4BB3BF;--tealtint:#E6F4F6;--ambertint:#FEF1DE;--ink:#1d2a4d;--mute:#5d6786;--line:#e3e8ee}
-*{box-sizing:border-box}
-html,body{margin:0}
-body{color:var(--ink);font:16px/1.5 Figtree,system-ui,sans-serif;padding-bottom:env(safe-area-inset-bottom);
-  background:var(--paper) linear-gradient(rgba(75,179,191,.12) 1px,transparent 1px) 0 0/36px 36px,linear-gradient(90deg,rgba(75,179,191,.12) 1px,transparent 1px) 0 0/36px 36px}
-a{color:inherit}
-:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
-.wrap{max-width:620px;margin:0 auto;padding:0 18px}
-.hero{text-align:center;padding:calc(26px + env(safe-area-inset-top)) 0 10px}
-.hero img{width:min(230px,62%);height:auto;display:block;margin:0 auto}
-.fallback{font:700 32px Lexend,sans-serif;color:var(--navy)}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-h1{margin:0}
-.socials{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 8px;margin:18px 0 6px}
-.soc{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;font-size:12.5px;font-weight:600;color:var(--navy)}
-.badge{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 17px Lexend,sans-serif;box-shadow:0 0 0 4px var(--paper),0 0 0 6px var(--c,var(--teal));transition:transform .15s}
-.soc:hover .badge{transform:translateY(-4px)}
-section{margin-top:34px}
-h2{display:flex;align-items:center;gap:12px;font:700 20px Lexend,sans-serif;color:var(--navy);margin:0 0 14px}
-h2::after{content:"";flex:1;height:2px;background:var(--c);border-radius:2px;opacity:.7}
-.list{display:grid;gap:10px}
-.link{display:flex;align-items:center;gap:12px;padding:12px 14px 12px 12px;background:#fff;border:1px solid var(--line);border-left:6px solid var(--c);border-radius:6px 16px 16px 6px;text-decoration:none;transition:transform .15s,box-shadow .15s}
-.link:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(23,51,126,.12)}
-.link .badge{width:34px;height:34px;font-size:12px;box-shadow:none;flex:none}
-.link b{display:block;font-weight:600;line-height:1.25}
-.link small{color:var(--mute)}
-.go{margin-left:auto;flex:none;width:30px;height:30px;border-radius:50%;background:var(--c);color:var(--navy);display:grid;place-items:center;font-weight:700}
-/* videos: one featured, the rest in a grid */
-.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px}
-.vid{text-decoration:none;display:block}
-.vid:first-child{grid-column:1/-1}
-.thumb{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,var(--navy),var(--teal));display:grid;place-items:center;border:3px solid #fff;box-shadow:0 4px 14px rgba(23,51,126,.18)}
-.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.play{position:relative;width:48px;height:48px;border-radius:50%;background:var(--amber);color:var(--navy);display:grid;place-items:center;font-size:16px;padding-left:3px;transition:transform .15s}
-.vid:first-child .play{width:60px;height:60px;font-size:20px}
-.vid:hover .play{transform:scale(1.12)}
-.thumb .badge{position:absolute;left:8px;top:8px;width:26px;height:26px;font-size:11px;box-shadow:none}
-.vid b{display:block;margin-top:8px;font-weight:600;line-height:1.25}
-.vid small{color:var(--mute)}
-.about{margin:0;white-space:pre-line;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;line-height:1.6}
-footer{text-align:center;color:var(--mute);font-size:13px;padding:40px 18px 30px}
-footer img{display:block;width:70px;margin:0 auto 8px}
-footer p{margin:0}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
-</style>
-</head>
-<body>
-<div id="public">
-  <main class="wrap">
-    <div class="hero"><div id="logoBox"></div><h1 class="sr" id="bName"></h1><p class="sr" id="bTag"></p></div>
-    <nav class="socials" id="socials" aria-label="Social media profiles"></nav>
-    <div id="sections"></div>
-  </main>
-  <footer><img src="logo.png" alt="" onerror="this.remove()"><p id="foot"></p></footer>
-</div>
 
-<script>
 /* ============ DEFAULT CONTENT (replaced by data.json once you upload one) ============ */
 const DEFAULT = {
   brand: { name: "Pindrop Miles", tagline: "Every mile, a new discovery", logo: "logo-full.png" },
   socials: [
-    { platform: "facebook",  url: "https://facebook.com/" },
-    { platform: "youtube",   url: "https://youtube.com/" },
-    { platform: "instagram", url: "https://instagram.com/" },
-    { platform: "tiktok",    url: "https://tiktok.com/" },
-    { platform: "x",         url: "https://x.com/" },
-    { platform: "threads",   url: "https://threads.net/" },
-    { platform: "linkedin",  url: "https://linkedin.com/" },
-    { platform: "pinterest", url: "https://pinterest.com/" }
+    { platform: "facebook",  url: "https://facebook.com/pindropmiles/" },
+    { platform: "youtube",   url: "https://youtube.com/@pindropmiles/" },
+    { platform: "instagram", url: "https://instagram.com/pindropmiles/" },
+    { platform: "tiktok",    url: "https://tiktok.com/@pindropmiles/" },
+    { platform: "x",         url: "https://x.com/pindropmiles/" },
+    { platform: "threads",   url: "https://threads.net/@pindropmiles/" },
+    { platform: "linkedin",  url: "https://linkedin.com/company/pindropmiles/" },
+    { platform: "pinterest", url: "https://pinterest.com/pindropmiles/" }
   ],
   sections: [
     { title: "Popular videos", type: "videos", items: [
@@ -170,11 +99,48 @@ function renderPublic(){
   foot.textContent = "© " + new Date().getFullYear() + " " + b.name;
 }
 
+/* ============ ADMIN: open this page with #admin on the end of the address ============ */
+function renderAdmin(){
+  const a = document.getElementById("admin"); a.replaceChildren();
+  const inp = (obj,key,ph) => el("input",{value:obj[key]||"",placeholder:ph,"aria-label":ph,oninput:e=>obj[key]=e.target.value});
+  const rm = (arr,i) => el("button",{class:"del",type:"button",text:"Remove",onclick:()=>{arr.splice(i,1);renderAdmin();}});
+  const sel = (opts,cur,fn,label) => el("select",{"aria-label":label,onchange:e=>fn(e.target.value)},
+    opts.map(([v,t])=>{const o=el("option",{value:v,text:t}); if(v===cur)o.selected=true; return o;}));
+  a.append(el("h1",{text:"Edit your links"}),
+    el("p",{class:"note",text:"Change anything below, then choose Download data.json and upload that file next to index.html on your host. Your live page updates for everyone after the upload."}));
+  a.append(el("div",{class:"card"},[el("h2",{text:"Brand"}),
+    el("div",{class:"row"},[inp(data.brand,"name","Brand name"),inp(data.brand,"tagline","Tagline")]),
+    el("div",{class:"row"},[inp(data.brand,"logo","Header logo file (e.g. logo-full.png)")])]));
+  const sc = el("div",{class:"card"},[el("h2",{text:"Social profiles"})]);
+  data.socials.forEach((s,i)=>sc.append(el("div",{class:"row"},[
+    sel(Object.keys(PLATFORMS).filter(k=>k!=="web").map(k=>[k,PLATFORMS[k].n]),s.platform,v=>s.platform=v,"Platform"),
+    inp(s,"url","Profile link"),rm(data.socials,i)])));
+  sc.append(el("button",{type:"button",text:"Add profile",onclick:()=>{data.socials.push({platform:"facebook",url:""});renderAdmin();}}));
+  a.append(sc);
+  data.sections.forEach((s,si)=>{
+    const c = el("div",{class:"card"},[el("div",{class:"row"},[inp(s,"title","Section title"),
+      sel([["links","Link list"],["videos","Video cards"],["text","Text block"]],s.type||"links",v=>{s.type=v;renderAdmin();},"Layout"),rm(data.sections,si)])]);
+    (s.type==="text"?[]:s.items).forEach((it,ii)=>c.append(el("div",{class:"row"},[inp(it,"label","Title"),inp(it,"url","Link (YouTube, TikTok, any URL)"),inp(it,"note","Short note (optional)"),rm(s.items,ii)])));
+    if(s.type==="text"){const ta=el("textarea",{rows:"4","aria-label":"Text",placeholder:"Write a short paragraph",oninput:e=>s.text=e.target.value});ta.value=s.text||"";c.append(ta);} else c.append(el("button",{type:"button",text:"Add link",onclick:()=>{s.items.push({label:"",url:"",note:""});renderAdmin();}}));
+    a.append(c);
+  });
+  a.append(el("button",{type:"button",text:"Add section",onclick:()=>{data.sections.push({title:"New section",type:"links",items:[{label:"",url:"",note:""}]});renderAdmin();}}));
+  a.append(el("div",{class:"bar"},[
+    el("button",{class:"pri",type:"button",text:"Download data.json",onclick:()=>{
+      const l=el("a",{href:URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"})),download:"data.json"});
+      document.body.append(l); l.click(); l.remove();}}),
+    el("button",{type:"button",text:"Preview page",onclick:()=>{renderPublic();location.hash="";}}),
+    el("button",{type:"button",text:"Load data.json…",onclick:()=>{
+      const f=el("input",{type:"file",accept:"application/json"});
+      f.onchange=()=>f.files[0].text().then(t=>{try{data=JSON.parse(t);renderAdmin();}catch(e){alert("That file is not valid JSON.");}});
+      f.click();}})]));
+}
+function route(){
+  const on = location.hash === "#admin";
+  document.body.classList.toggle("admin",on);
+  if(on) renderAdmin(); else renderPublic();
+}
 (async()=>{
   try{ const r = await fetch("data.json",{cache:"no-store"}); if(r.ok) data = await r.json(); }catch(e){}
-  if(location.hash==="#preview"){ try{ const p=localStorage.getItem("pm_preview"); if(p) data=JSON.parse(p); }catch(e){} }
-  renderPublic();
+  route(); addEventListener("hashchange",route);
 })();
-</script>
-</body>
-</html>
